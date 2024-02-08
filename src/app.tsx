@@ -3,23 +3,38 @@ import { NewNoteCard } from "./components/new-note-card";
 import { NoteCard } from "./components/note-card";
 import React, { useState } from "react";
 
+
+interface Note {
+  id: string
+  date: Date
+  content: string
+}
+
+
 export function App() {
 
-  const [notes,setNotes] = useState([
-    {id:1, date: new Date(),content: 'Hello World'},
-    {id:2, date: new Date(),content: 'Hello '}
+  const [notes,setNotes] = useState<Note[]>(()=>{
+    const notesOnStorage = localStorage.getItem('notes')
 
-  ])
-
+    if(notesOnStorage){
+      return JSON.parse(notesOnStorage)
+    }
+    return []
+  })
+/* o array terá o formato de Note dito na interface */
 
   function onNoteCreated(content:string) {
     const newNote ={
-      id:Math.random(),
+      id:crypto.randomUUID(), /* id string único */
       date: new Date(),
       content
     }
 
-    setNotes([newNote,...notes])
+    const notesArray = [newNote,...notes];
+
+    setNotes(notesArray)
+
+    localStorage.setItem('notes', JSON.stringify(notesArray))
   }
 
 
